@@ -25,7 +25,9 @@ input.addEventListener("keydown", (ev) => {
   console.debug("keydown", ev.key);
   if (ev.key === "Enter") {
     console.log("Enter detected. current value:", input.value);
-    // TODO use the provided later() function here
+    later(input.value, (result)=> {
+      setOutput(result.target, result.valediction);
+    });
   }
 });
 
@@ -39,7 +41,7 @@ input.addEventListener("keydown", (ev) => {
 //
 const setOutput = (target, valediction) => {
   console.log("setOutput", target, valediction);
-  // TODO see comments just above 🙄
+  output.textContent = `${valediction}, ${target}`;
 };
 
 // for Part 2
@@ -48,3 +50,21 @@ const setOutput = (target, valediction) => {
 // (if the user hasn't entered anything, simply exclude the query argument in your invocation to options).
 // add each of the resulting target options as buttons in list items in the ul.
 // when any of these buttons are clicked, user the later() function to request the corresponding valediction and update the output element as in Part 1
+input.addEventListener("input", () => {
+  const target = input.value;
+  options((keys) => {
+    document.getElementById("available-targets").innerHTML = '';
+    keys.forEach((key)=> {
+      const targetButton = document.createElement("button");
+      targetButton.textContent = key;
+      targetButton.addEventListener("click", () => {
+      later(key, (result)=> {
+        setOutput(result.target, result.valediction);
+      });
+    });
+    const buttonList = document.createElement("li");
+    buttonList.appendChild(targetButton);
+    document.getElementById("available-targets").appendChild(buttonList);
+  });
+}, target);
+});
